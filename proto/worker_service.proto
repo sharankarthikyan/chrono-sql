@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package workerservice;
+
+// The worker service definition
+service WorkerService {
+    rpc GetReplayData (WorkerQueryRequest) returns (WorkerQueryResponse);
+}
+
+// The request message for replay data
+message WorkerQueryRequest {
+    string cid = 1; // Chronicle ID
+    int64 start_eid = 2; // Start Event ID
+    int64 end_eid = 3; // End Event ID
+}
+
+// The response message with events
+message WorkerQueryResponse {
+    repeated Event events = 1;
+}
+
+// Event data structure
+message Event {
+    int64 eid = 1; // Event ID
+    string data = 2; // Event data
+}

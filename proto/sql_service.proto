@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package sqlservice;
+
+service QueryRouter {
+    rpc ExecuteQuery (QueryRequest) returns (QueryResponse);
+}
+
+message QueryRequest {
+    string query = 1;
+}
+
+message QueryResponse {
+    bytes result = 1;
+}

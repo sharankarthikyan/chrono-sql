@@ -1,0 +1,6 @@
+/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/build/CMakeFiles/event_generator.dir
+/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/build/CMakeFiles/sql_client.dir
+/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/build/CMakeFiles/query_router_server.dir
+/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/build/CMakeFiles/worker_server.dir
+/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/build/CMakeFiles/edit_cache.dir
+/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/build/CMakeFiles/rebuild_cache.dir

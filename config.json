@@ -1,0 +1,22 @@
+{
+  "NUMBER_EVENTS": 1,
+  "EVENT_TYPE": "INDEXED_KEY_VALUE",
+  "OUTPUT_FILE": "test",
+  "PAYLOAD_SIZE": 15,
+  "PAYLOAD_VARIATION": 0,
+  "FIXED_PAYLOAD_SIZE": 15,
+  "INDEX_INTERVAL_BYTES": 2700,
+  "LOWER_TIMESTAMP": 1628202739,
+  "HIGHER_TIMESTAMP": 1659738749,
+  "HIDE_OUTPUT": 0,
+  "N_EXECUTIONS": 5,
+  "SQL_FILE_PATH": "../benchmark/statements.sql",
+  "query_router_servers": [
+    "localhost:50051",
+    "localhost:50052"
+  ],
+  "worker_servers": [
+    "localhost:50081",
+    "localhost:50082"
+  ]
+}
