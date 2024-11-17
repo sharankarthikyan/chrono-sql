@@ -457,6 +457,43 @@ std::string ChronoSQLParser::longToChar(long value) {
     return std::to_string(value);
 }
 
+std::unique_ptr<std::list<std::pair<EID, std::string>>> ChronoSQLParser::executeJoin(const hsql::JoinDefinition* joinDef, const std::list<ConditionExpression*>* conditions) {
+    auto interval_ptr = this->extractInterval(conditions);
+
+    auto leftEvents = this->getReplayDataFromWorker(joinDef->left->getName(), interval_ptr->startEID, interval_ptr->endEID);
+    auto rightEvents = this->getReplayDataFromWorker(joinDef->right->getName(), interval_ptr->startEID, interval_ptr->endEID);
+
+    auto joinResults = std::make_unique<std::list<std::pair<EID, std::string>>>();
+
+    if (joinDef->type == hsql::kJoinInner || joinDef->type == hsql::kJoinLeft) {
+        for (const auto& leftEvent : *leftEvents) {
+            bool matchFound = false;
+            for (const auto& rightEvent : *rightEvents) {
+                if (rightEvent.first > leftEvent.first) {
+                    break;
+                }
+                if (evaluateJoinCondition(leftEvent, rightEvent, joinDef->condition)) {
+                    std::string combinedPayload = leftEvent.second + " | " + rightEvent.second;
+                    joinResults->emplace_back(leftEvent.first, combinedPayload);
+                    matchFound = true;
+                }
+            }
+            if (joinDef->type == hsql::kJoinLeft && !matchFound) {
+                joinResults->emplace_back(leftEvent.first, leftEvent.second);
+            }
+        }
+    }
+
+    return joinResults;
+}
+
+bool ChronoSQLParser::evaluateJoinCondition(const std::pair<EID, std::string>& leftEvent, const std::pair<EID, std::string>& rightEvent, const hsql::Expr* condition) {
+    if (condition->opType == hsql::kOpEquals) {
+        return leftEvent.first == rightEvent.first;
+    }
+    return false;
+}
+
 int ChronoSQLParser::parseSelectStatement(const hsql::SelectStatement* statement, QueryResponse *response) {
     auto expressions = std::make_unique<std::vector<SelectExpression*>>();
     std::unordered_map<std::string, std::string> aliases;
@@ -478,6 +515,21 @@ int ChronoSQLParser::parseSelectStatement(const hsql::SelectStatement* statement
     std::unique_ptr<std::list<GroupByExpression*>> groupByExpressions = nullptr;
     if (statement->groupBy != nullptr) {
         groupByExpressions = parseGroupBy(statement->groupBy, aliases);
+    }
+
+    const hsql::TableRef* fromTable = statement->fromTable;
+    if (fromTable->type == hsql::kTableJoin) {
+        const hsql::JoinDefinition* join = fromTable->join;
+
+        try {
+            auto joinResults = this->executeJoin(join, conditions.get());
+            this->printResults(std::move(joinResults), aliases, std::move(groupByExpressions), response);
+        } catch (const std::exception &e) {
+            std::cout << "Error executing join: " + std::string(e.what()) << std::endl;
+            return -1;
+        }
+
+        return 0;
     }
 
     std::unique_ptr<std::list<std::pair<EID, std::string>>> results;

@@ -78,6 +78,10 @@ private:
 
     static void printException(std::exception& e);
 
+    std::unique_ptr<std::list<std::pair<EID, std::string>>> executeJoin(const hsql::JoinDefinition* joinDef, const std::list<ConditionExpression*>* conditions);
+
+    bool evaluateJoinCondition(const std::pair<EID, std::string>& leftEvent, const std::pair<EID, std::string>& rightEvent, const hsql::Expr* condition);
+
     static std::string longToChar(long value);
 };
 
