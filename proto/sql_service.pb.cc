@@ -119,7 +119,7 @@ const char descriptor_table_protodef_sql_5fservice_2eproto[] ABSL_ATTRIBUTE_SECT
     protodesc_cold) = {
     "\n\021sql_service.proto\022\nsqlservice\"\035\n\014Query"
     "Request\022\r\n\005query\030\001 \001(\t\"\037\n\rQueryResponse\022"
-    "\016\n\006result\030\001 \001(\0142R\n\013QueryRouter\022C\n\014Execut"
+    "\016\n\006result\030\001 \001(\t2R\n\013QueryRouter\022C\n\014Execut"
     "eQuery\022\030.sqlservice.QueryRequest\032\031.sqlse"
     "rvice.QueryResponseb\006proto3"
 };
@@ -450,7 +450,7 @@ const ::google::protobuf::MessageLite::ClassData* QueryResponse::GetClassData() 
   return _class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 0, 0, 2> QueryResponse::_table_ = {
+const ::_pbi::TcParseTable<0, 1, 0, 39, 2> QueryResponse::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -468,18 +468,21 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> QueryResponse::_table_ = {
     ::_pbi::TcParser::GetTable<::sqlservice::QueryResponse>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // bytes result = 1;
-    {::_pbi::TcParser::FastBS1,
+    // string result = 1;
+    {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(QueryResponse, _impl_.result_)}},
   }}, {{
     65535, 65535
   }}, {{
-    // bytes result = 1;
+    // string result = 1;
     {PROTOBUF_FIELD_OFFSET(QueryResponse, _impl_.result_), 0, 0,
-    (0 | ::_fl::kFcSingular | ::_fl::kBytes | ::_fl::kRepAString)},
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
   }},
   // no aux_entries
   {{
+    "\30\6\0\0\0\0\0\0"
+    "sqlservice.QueryResponse"
+    "result"
   }},
 };
 
@@ -509,10 +512,12 @@ PROTOBUF_NOINLINE void QueryResponse::Clear() {
           ::uint32_t cached_has_bits = 0;
           (void)cached_has_bits;
 
-          // bytes result = 1;
+          // string result = 1;
           if (!this_._internal_result().empty()) {
             const std::string& _s = this_._internal_result();
-            target = stream->WriteBytesMaybeAliased(1, _s, target);
+            ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+                _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "sqlservice.QueryResponse.result");
+            target = stream->WriteStringMaybeAliased(1, _s, target);
           }
 
           if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
@@ -539,9 +544,9 @@ PROTOBUF_NOINLINE void QueryResponse::Clear() {
           (void)cached_has_bits;
 
            {
-            // bytes result = 1;
+            // string result = 1;
             if (!this_._internal_result().empty()) {
-              total_size += 1 + ::google::protobuf::internal::WireFormatLite::BytesSize(
+              total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                               this_._internal_result());
             }
           }

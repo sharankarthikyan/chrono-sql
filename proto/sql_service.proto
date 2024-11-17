@@ -11,5 +11,5 @@ message QueryRequest {
 }
 
 message QueryResponse {
-    bytes result = 1;
+    string result = 1;
 }

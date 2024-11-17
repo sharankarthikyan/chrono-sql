@@ -1,6 +1,11 @@
 #include "ChronoSQLParser.h"
 #include <iostream>
 #include <cstring>
+#include <fstream>
+#include <random>
+#include <algorithm>
+#include <stdexcept>
+#include <cmath>
 #include "SQLParser.h"
 #include "SQLParserResult.h"
 #include "SelectExpression.h"
@@ -8,7 +13,6 @@
 #include "WorkerClient.h"
 #include "document.h"
 #include "error/en.h"
-
 
 bool hideOutput;
 ChronoLog *chronoLog;
@@ -83,7 +87,7 @@ ChronoSQLParser::ChronoSQLParser(ConfigurationValues *config, const std::string&
     dist_ = std::uniform_int_distribution<>(0, worker_clients_.size() - 1);
 }
 
-std::list<std::pair<EID, const char*>>* ChronoSQLParser::getReplayDataFromWorker(const std::string& cid, int64_t startEID, int64_t endEID) {
+std::unique_ptr<std::list<std::pair<EID, std::string>>> ChronoSQLParser::getReplayDataFromWorker(const std::string& cid, int64_t startEID, int64_t endEID) {
     int retries = worker_clients_.size();
 
     while (retries-- > 0) {
@@ -93,9 +97,9 @@ std::list<std::pair<EID, const char*>>* ChronoSQLParser::getReplayDataFromWorker
             auto results = worker_clients_[index].getReplayData(cid, startEID, endEID);
 
             // Convert std::vector to std::list
-            auto* result_list = new std::list<std::pair<EID, const char*>>();
+            auto result_list = std::make_unique<std::list<std::pair<EID, std::string>>>();
             for (const auto& result : results) {
-                result_list->emplace_back(result.first, result.second.c_str());
+                result_list->emplace_back(result.first, result.second);
             }
 
             return result_list;
@@ -107,7 +111,6 @@ std::list<std::pair<EID, const char*>>* ChronoSQLParser::getReplayDataFromWorker
     throw std::runtime_error("All workers failed.");
 }
 
-
 void ChronoSQLParser::parse(const std::string& query, QueryResponse* response) {
     hsql::SQLParserResult result;
     hsql::SQLParser::parse(query, &result);
@@ -116,7 +119,7 @@ void ChronoSQLParser::parse(const std::string& query, QueryResponse* response) {
         for (int i = 0; i < result.size(); i++) {
             const hsql::SQLStatement* statement = result.getStatement(i);
             if (statement->isType(hsql::kStmtSelect)) {
-                parseSelectStatement((const hsql::SelectStatement*)statement, response);
+                parseSelectStatement(static_cast<const hsql::SelectStatement*>(statement), response);
             }
             else {
                 response->set_result("Unsupported statement. Supported statements: {SELECT}.");
@@ -127,8 +130,8 @@ void ChronoSQLParser::parse(const std::string& query, QueryResponse* response) {
     }
 }
 
-EventInterval* ChronoSQLParser::extractInterval(const std::list<ConditionExpression*>* conditions) {
-    auto interval = new EventInterval();
+std::unique_ptr<EventInterval> ChronoSQLParser::extractInterval(const std::list<ConditionExpression*>* conditions) {
+    auto interval = std::make_unique<EventInterval>();
 
     if (conditions != nullptr && !conditions->empty()) {
         for (auto cond : *conditions) {
@@ -170,27 +173,25 @@ EventInterval* ChronoSQLParser::extractInterval(const std::list<ConditionExpress
     return interval;
 }
 
-void ChronoSQLParser::printResults(std::list<std::pair<EID, const char*>>* events,
+void ChronoSQLParser::printResults(std::unique_ptr<std::list<std::pair<EID, std::string>>> events,
                                    std::unordered_map<std::string, std::string> aliases,
-                                   std::list<GroupByExpression*>* groupBy,
+                                   std::unique_ptr<std::list<GroupByExpression*>> groupBy,
                                    QueryResponse* response) {
     std::string result_output;
     int i = 0, isAggregate = 0, isWindow = 0;
 
-    if (events->size() > 0 &&
+    if (!events->empty() &&
         (SUPPORTED_FUNCTIONS.count(events->front().second) ||
          SUPPORTED_FUNCTIONS.count(aliases[events->front().second]))) {
         isAggregate = 1;
-        isWindow = (strcmp(events->front().second, "WINDOW") == 0) || aliases[events->front().second] == "WINDOW";
+        isWindow = (events->front().second == "WINDOW") || aliases[events->front().second] == "WINDOW";
 
-        result_output += events->front().second;
-        result_output += "\n";
-
+        result_output += events->front().second + "\n";
         events->pop_front();
     }
 
     result_output += "----------\n";
-    for (auto& event : *events) {
+    for (const auto& event : *events) {
         std::string windowValue = isWindow ? std::to_string(event.first) + "     " : "";
         result_output += windowValue + event.second + "\n";
         i++;
@@ -201,6 +202,8 @@ void ChronoSQLParser::printResults(std::list<std::pair<EID, const char*>>* event
     }
 
     response->set_result(result_output);
+
+    // No need to delete anything; unique_ptr will automatically handle memory
 }
 
 SelectExpression* ChronoSQLParser::parseSelectToken(hsql::Expr* expr, std::unordered_map<std::string, std::string>& aliases) {
@@ -252,7 +255,7 @@ std::list<ConditionExpression*>* ChronoSQLParser::parseWhereExpression(const hsq
         if (expression->expr2->type == hsql::kExprLiteralInt) {
             result->push_back(
                     new ConditionExpression(expression->opType, expression->expr->name,
-                                            (long)expression->expr2->ival));
+                                            static_cast<long>(expression->expr2->ival)));
         }
         else if (expression->expr2->type == hsql::kExprLiteralFloat) {
             result->push_back(
@@ -267,7 +270,7 @@ std::list<ConditionExpression*>* ChronoSQLParser::parseWhereExpression(const hsq
         else if (expression->expr->type == hsql::kExprLiteralInt) {
             result->push_back(
                     new ConditionExpression(expression->opType, expression->expr2->name,
-                                            (long)expression->ival));
+                                            static_cast<long>(expression->ival)));
         }
         else if (expression->expr->type == hsql::kExprLiteralFloat) {
             result->push_back(
@@ -285,9 +288,9 @@ std::list<ConditionExpression*>* ChronoSQLParser::parseWhereExpression(const hsq
     return nullptr;
 }
 
-std::list<GroupByExpression*>*
+std::unique_ptr<std::list<GroupByExpression*>>
 ChronoSQLParser::parseGroupBy(hsql::GroupByDescription* groupBy, std::unordered_map<std::string, std::string> aliases) {
-    auto* result = new std::list<GroupByExpression*>;
+    auto result = std::make_unique<std::list<GroupByExpression*>>();
     for (hsql::Expr* expr : *groupBy->columns) {
         std::string name = expr->name;
         std::string alias;
@@ -300,10 +303,10 @@ ChronoSQLParser::parseGroupBy(hsql::GroupByDescription* groupBy, std::unordered_
     return result;
 }
 
-std::list<std::pair<EID, const char*>>*
+std::unique_ptr<std::list<std::pair<EID, std::string>>>
 ChronoSQLParser::executeExpressions(const CID& cid, std::vector<SelectExpression*>* expressions,
                    const std::list<ConditionExpression*>* conditions,
-                   std::list<GroupByExpression*>& groupBy,
+                   std::list<GroupByExpression*>* groupBy,
                    std::unordered_map<std::string, std::string>& aliases) {
     for (SelectExpression* e : *expressions) {
         if (e->isStar) {
@@ -313,45 +316,44 @@ ChronoSQLParser::executeExpressions(const CID& cid, std::vector<SelectExpression
             }
             else {
                 auto events = getReplayDataFromWorker(cid, interval->startEID, interval->endEID);
-                auto* value = new std::list<std::pair<EID, const char*>>();
-                for (auto ev : *events) {
+                auto value = std::make_unique<std::list<std::pair<EID, std::string>>>();
+                for (const auto& ev : *events) {
                     if (eventMeetsDaysOfTheWeek(ev, interval->days)) {
-                        value->push_back(ev);
+                        value->emplace_back(ev.first, ev.second);
                     }
                 }
-                free(events);
                 return value;
             }
         }
         else if (e->isFunction) {
-            auto* value = new std::list<std::pair<EID, const char*>>();
-            std::transform(e->name.begin(), e->name.end(), e->name.begin(), ::toupper);
-            if (SUPPORTED_FUNCTIONS.count(e->name)) {
+            auto value = std::make_unique<std::list<std::pair<EID, std::string>>>();
+            std::string funcName = e->name;
+            std::transform(funcName.begin(), funcName.end(), funcName.begin(), ::toupper);
+            if (SUPPORTED_FUNCTIONS.count(funcName)) {
                 if (e->isAliased) {
-                    value->push_back(std::pair(0, e->alias.c_str()));
-                    aliases[e->alias] = e->name;    // Uppercase transformation
+                    value->emplace_back(0, e->alias);
+                    aliases[e->alias] = funcName;    // Uppercase transformation
                 }
                 else {
-                    value->push_back(std::pair(0, e->name.c_str()));
+                    value->emplace_back(0, funcName);
                 }
 
-                if (e->name == "COUNT") {
+                if (funcName == "COUNT") {
                     auto results = executeExpressions(cid, e->nestedExpressions, conditions, groupBy, aliases);
-                    value->push_back(std::pair(0, std::to_string(results->size()).c_str()));
-                    free(results);
+                    value->emplace_back(0, std::to_string(results->size()));
                 }
-                else if (e->name == "WINDOW") {
+                else if (funcName == "WINDOW") {
                     if (e->nestedExpressions == nullptr || e->nestedExpressions->empty() ||
                         e->nestedExpressions->front()->type != hsql::kExprLiteralInterval) {
                         throw InvalidWindowArgumentException();
                     }
 
-                    if (!groupBy.empty()) {
-                        std::transform(groupBy.front()->name.begin(), groupBy.front()->name.end(),
-                                       groupBy.front()->name.begin(), ::toupper);
+                    if (groupBy != nullptr && !groupBy->empty()) {
+                        std::transform(groupBy->front()->name.begin(), groupBy->front()->name.end(),
+                                       groupBy->front()->name.begin(), ::toupper);
 
-                        if (!groupBy.empty() && groupBy.front()->name == "WINDOW") {
-                            groupBy.front()->expression = SelectExpression::intervalExpression(
+                        if (groupBy->front()->name == "WINDOW") {
+                            groupBy->front()->expression = SelectExpression::intervalExpression(
                                     e->nestedExpressions->front()->value, e->nestedExpressions->front()->dateTime);
                         }
 
@@ -371,11 +373,11 @@ ChronoSQLParser::executeExpressions(const CID& cid, std::vector<SelectExpression
             }
         }
         else {
-            // Handle logic
+            // Handle other expression types
         }
     }
 
-    return {};
+    return nullptr; // Changed from {} to nullptr for clarity
 }
 
 long ChronoSQLParser::getIntervalSeconds(SelectExpression* interval) {
@@ -383,34 +385,34 @@ long ChronoSQLParser::getIntervalSeconds(SelectExpression* interval) {
 }
 
 void ChronoSQLParser::executeWindow(const CID& cid, const std::list<ConditionExpression*>* conditions,
-                   std::list<GroupByExpression*>& groupBy, std::list<std::pair<EID, const char*>>& value,
+                   std::list<GroupByExpression*>* groupBy, std::list<std::pair<EID, std::string>>& value,
                    SelectExpression* aggregate) {
     auto interval = extractInterval(conditions);
     auto events = getReplayDataFromWorker(cid, interval->startEID, interval->endEID);
 
     if (!events->empty()) {
-        long intervalSize = getIntervalSeconds(groupBy.front()->expression);
+        long intervalSize = getIntervalSeconds(groupBy->front()->expression);
         long currentAgg = 0;
         EID intervalStart = events->front().first;
         EID intervalEnd = intervalStart + intervalSize;
 
-        for (auto ev : *events) {
+        for (const auto& ev : *events) {
             if (!eventMeetsDaysOfTheWeek(ev, interval->days)) {
                 continue;
             }
 
             if (ev.first >= intervalEnd) {
                 if (aggregate != nullptr) {
-                    value.push_back({ intervalStart, longToChar(currentAgg).c_str() });
+                    value.emplace_back(intervalStart, std::to_string(currentAgg));
                     currentAgg = 0;
                 }
 
-                intervalStart = intervalEnd + trunc((ev.first - intervalEnd) / intervalSize) * intervalSize;
+                intervalStart = intervalEnd + static_cast<EID>(floor((ev.first - intervalEnd) / intervalSize)) * intervalSize;
                 intervalEnd = intervalStart + intervalSize;
             }
 
             if (aggregate == nullptr) {
-                value.push_back({ intervalStart, ev.second });
+                value.emplace_back(intervalStart, ev.second);
             }
             else {
                 currentAgg++;
@@ -418,16 +420,16 @@ void ChronoSQLParser::executeWindow(const CID& cid, const std::list<ConditionExp
         }
 
         if (aggregate != nullptr) {
-            value.push_back({ intervalStart, longToChar(currentAgg).c_str() });
+            value.emplace_back(intervalStart, std::to_string(currentAgg));
         }
 
     }
 
-    free(events);
+    // No manual deletion
 }
 
 bool
-ChronoSQLParser::eventMeetsDaysOfTheWeek(std::pair<EID, const char*> ev, const std::list<Enumerations::DayOfTheWeek>& dows) {
+ChronoSQLParser::eventMeetsDaysOfTheWeek(std::pair<EID, std::string> ev, const std::list<Enumerations::DayOfTheWeek>& dows) {
     if (dows.empty()) {
         return true;
     }
@@ -444,24 +446,19 @@ Enumerations::DayOfTheWeek ChronoSQLParser::extractDayOfTheWeek(EID eid) {
     // Assumption: day of the week is in UTC
     // January 1, 1970, 00.00 was Thursday, 86400 seconds in a day
     int dow = (static_cast<long>(floor(eid / 86400)) + 4) % 7;
-    return (Enumerations::DayOfTheWeek)dow;
+    return static_cast<Enumerations::DayOfTheWeek>(dow);
 }
-
 
 void ChronoSQLParser::printException(std::exception& e) {
     std::cout << e.what() << std::endl;
 }
 
 std::string ChronoSQLParser::longToChar(long value) {
-    // int charsRequired = snprintf(nullptr, 0, "%ld", value) + 1;
-    // char* stringValue = static_cast<char*>(malloc(charsRequired));
-    // snprintf(stringValue, charsRequired, "%ld", value);
-    // return stringValue;
     return std::to_string(value);
 }
 
 int ChronoSQLParser::parseSelectStatement(const hsql::SelectStatement* statement, QueryResponse *response) {
-    auto* expressions = new std::vector<SelectExpression*>;
+    auto expressions = std::make_unique<std::vector<SelectExpression*>>();
     std::unordered_map<std::string, std::string> aliases;
 
     for (hsql::Expr* expr : *statement->selectList) {
@@ -473,21 +470,20 @@ int ChronoSQLParser::parseSelectStatement(const hsql::SelectStatement* statement
         expressions->push_back(e);
     }
 
-    std::list<ConditionExpression*>* conditions = {};
+    std::unique_ptr<std::list<ConditionExpression*>> conditions = nullptr;
     if (statement->whereClause != nullptr) {
-        conditions = parseWhereExpression(statement->whereClause);
+        conditions = std::unique_ptr<std::list<ConditionExpression*>>(parseWhereExpression(statement->whereClause));
     }
 
-    std::list<GroupByExpression*>* groupByExpressions = {};
+    std::unique_ptr<std::list<GroupByExpression*>> groupByExpressions = nullptr;
     if (statement->groupBy != nullptr) {
         groupByExpressions = parseGroupBy(statement->groupBy, aliases);
     }
 
-    std::list<std::pair<EID, const char*>>* results;
+    std::unique_ptr<std::list<std::pair<EID, std::string>>> results;
 
     try {
-        results = executeExpressions(statement->fromTable->name, expressions, conditions, *groupByExpressions,
-                                     aliases);
+        results = executeExpressions(statement->fromTable->name, expressions.get(), conditions.get(), groupByExpressions.get(), aliases);
     }
     catch (ChronicleNotFoundException& e) {
         std::cout << "ERROR: Chronicle \"" << statement->fromTable->name << "\" does not exist" << std::endl;
@@ -510,13 +506,8 @@ int ChronoSQLParser::parseSelectStatement(const hsql::SelectStatement* statement
         return -1;
     }
 
-    printResults(results, aliases, groupByExpressions, response);
+    printResults(std::move(results), aliases, std::move(groupByExpressions), response);
 
-    free(results);
-    free(conditions);
-    free(expressions);
-    free(groupByExpressions);
+    // No need to manually delete anything; unique_ptr will automatically handle memory
     return 0;
 }
-
-

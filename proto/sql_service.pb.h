@@ -212,7 +212,7 @@ class QueryResponse final : public ::google::protobuf::Message
   enum : int {
     kResultFieldNumber = 1,
   };
-  // bytes result = 1;
+  // string result = 1;
   void clear_result() ;
   const std::string& result() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -234,7 +234,7 @@ class QueryResponse final : public ::google::protobuf::Message
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
       0, 1, 0,
-      0, 2>
+      39, 2>
       _table_;
 
   static constexpr const void* _raw_default_instance_ =
@@ -526,7 +526,7 @@ inline void QueryRequest::set_allocated_query(std::string* value) {
 
 // QueryResponse
 
-// bytes result = 1;
+// string result = 1;
 inline void QueryResponse::clear_result() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.result_.ClearToEmpty();
@@ -540,7 +540,7 @@ template <typename Arg_, typename... Args_>
 inline PROTOBUF_ALWAYS_INLINE void QueryResponse::set_result(Arg_&& arg,
                                                      Args_... args) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.result_.SetBytes(static_cast<Arg_&&>(arg), args..., GetArena());
+  _impl_.result_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
   // @@protoc_insertion_point(field_set:sqlservice.QueryResponse.result)
 }
 inline std::string* QueryResponse::mutable_result() ABSL_ATTRIBUTE_LIFETIME_BOUND {

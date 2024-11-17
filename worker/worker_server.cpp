@@ -21,7 +21,7 @@ public:
         int64_t endEID = request->end_eid();
 
         std::cout << "Processing replay request: CID=" << cid
-                  << ", StartEID=" << startEID << ", EndEID=" << endEID << std::endl;
+            << ", StartEID=" << startEID << ", EndEID=" << endEID << std::endl;
 
         // Simulating chronoLog->replay functionality
         auto events = chronoLog.replay(cid, startEID, endEID);
@@ -44,11 +44,8 @@ void RunWorkerServer(const std::string& server_address) {
     ConfigurationManager configManager("/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/config.json");
     auto config = configManager.getConfiguration();
 
-
-    // Initialize ChronoLog with worker-specific configuration
     ChronoLog log(config);
 
-    // Create WorkerServiceImpl with initialized ChronoLog
     WorkerServiceImpl service(log);
 
     ServerBuilder builder;
@@ -68,7 +65,8 @@ int main(int argc, char** argv) {
         std::string arg = argv[i];
         if (arg == "--host" && i + 1 < argc) {
             host = argv[++i];
-        } else if (arg == "--port" && i + 1 < argc) {
+        }
+        else if (arg == "--port" && i + 1 < argc) {
             port = argv[++i];
         }
     }

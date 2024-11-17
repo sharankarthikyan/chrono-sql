@@ -1,3 +1,6 @@
+#ifndef CHRONOSQL_SQLPARSER_H
+#define CHRONOSQL_SQLPARSER_H
+
 #include "sql_service.grpc.pb.h"
 #include <string>
 #include <memory>
@@ -21,9 +24,6 @@ using grpc::ServerContext;
 using grpc::Status;
 using sqlservice::QueryResponse;
 
-#ifndef CHRONOSQL_SQLPARSER_H
-#define CHRONOSQL_SQLPARSER_H
-
 class ChronoSQLParser {
 public:
     ChronoSQLParser(ConfigurationValues *config, const std::string& filename);
@@ -35,33 +35,36 @@ private:
 
     const std::set<std::string> SUPPORTED_FUNCTIONS = {"COUNT", "WINDOW"};
 
-    void printResults(std::list<std::pair<EID, const char*>>* events,
+    // Updated to use unique_ptr
+    void printResults(std::unique_ptr<std::list<std::pair<EID, std::string>>> events,
                       std::unordered_map<std::string, std::string> aliases,
-                      std::list<GroupByExpression*>* groupBy,
+                      std::unique_ptr<std::list<GroupByExpression*>> groupBy,
                       QueryResponse* response);
 
     std::vector<std::string> ReadServerAddresses(const std::string& filename);
 
-    std::list<std::pair<EID, const char*>>* getReplayDataFromWorker(const std::string& cid, int64_t startEID, int64_t endEID);
+    // Updated to return unique_ptr
+    std::unique_ptr<std::list<std::pair<EID, std::string>>> getReplayDataFromWorker(const std::string& cid, int64_t startEID, int64_t endEID);
 
     int parseSelectStatement(const hsql::SelectStatement* statement, QueryResponse* response);
 
-    std::list<std::pair<EID, const char*>>*
+    // Updated to return unique_ptr and accept unique_ptr for groupBy
+    std::unique_ptr<std::list<std::pair<EID, std::string>>>
     executeExpressions(const CID& cid, std::vector<SelectExpression*>* expressions,
                        const std::list<ConditionExpression*>* conditions,
-                       std::list<GroupByExpression*>& groupBy,
+                       std::list<GroupByExpression*>* groupBy,
                        std::unordered_map<std::string, std::string>& aliases);
 
-    static EventInterval* extractInterval(const std::list<ConditionExpression*>* conditions);
+    static std::unique_ptr<EventInterval> extractInterval(const std::list<ConditionExpression*>* conditions);
 
     static long getIntervalSeconds(SelectExpression* interval);
 
     void executeWindow(const CID& cid, const std::list<ConditionExpression*>* conditions,
-                       std::list<GroupByExpression*>& groupBy,
-                       std::list<std::pair<EID, const char*>>& value,
+                       std::list<GroupByExpression*>* groupBy,
+                       std::list<std::pair<EID, std::string>>& value,
                        SelectExpression* aggregate);
 
-    static bool eventMeetsDaysOfTheWeek(std::pair<EID, const char*> ev, 
+    static bool eventMeetsDaysOfTheWeek(std::pair<EID, std::string> ev, 
                                         const std::list<Enumerations::DayOfTheWeek>& dows);
 
     static Enumerations::DayOfTheWeek extractDayOfTheWeek(EID eid);
@@ -70,8 +73,8 @@ private:
 
     SelectExpression* parseSelectToken(hsql::Expr* expr, std::unordered_map<std::string, std::string>& aliases);
 
-    static std::list<GroupByExpression*>* parseGroupBy(hsql::GroupByDescription* groupBy,
-                                                       std::unordered_map<std::string, std::string> aliases);
+    static std::unique_ptr<std::list<GroupByExpression*>> parseGroupBy(hsql::GroupByDescription* groupBy,
+                                                                       std::unordered_map<std::string, std::string> aliases);
 
     static void printException(std::exception& e);
 
