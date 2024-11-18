@@ -2,39 +2,44 @@ syntax = "proto3";
 
 package workerservice;
 
+// Enum for Join Types
+enum JoinType {
+    INNER = 0;
+    LEFT = 1;
+}
+
 // The worker service definition
 service WorkerService {
     rpc GetReplayData (WorkerQueryRequest) returns (WorkerQueryResponse);
-    rpc PerformJoin (PerformJoinRequest) returns (PerformJoinResponse); // New RPC for Join
+    rpc JoinEvents (JoinEventsRequest) returns (JoinEventsResponse); // New RPC
 }
 
-// The request message for replay data
+// Existing request message for replay data
 message WorkerQueryRequest {
-    string cid = 1;          // Chronicle ID
-    int64 start_eid = 2;     // Start Event ID
-    int64 end_eid = 3;       // End Event ID
+    string cid = 1; // Chronicle ID
+    int64 start_eid = 2; // Start Event ID
+    int64 end_eid = 3; // End Event ID
 }
 
-// The response message with events
+// Existing response message with events
 message WorkerQueryResponse {
     repeated Event events = 1;
 }
 
+// New request message for joining events
+message JoinEventsRequest {
+    repeated Event left_events = 1;
+    repeated Event right_events = 2;
+    JoinType join_type = 3; // New field for join type
+}
+
+// New response message with joined events
+message JoinEventsResponse {
+    repeated Event joined_events = 1;
+}
+
 // Event data structure
 message Event {
-    int64 eid = 1;           // Event ID
-    string data = 2;         // Event data
-}
-
-// New message types for PerformJoin RPC
-
-// The request message for performing a join
-message PerformJoinRequest {
-    repeated Event left_events = 1;   // Events from the left table
-    repeated Event right_events = 2;  // Events from the right table
-}
-
-// The response message with joined events
-message PerformJoinResponse {
-    repeated Event events = 1;         // Joined events
+    int64 eid = 1; // Event ID
+    string data = 2; // Event data
 }

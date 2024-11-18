@@ -23,6 +23,7 @@ namespace workerservice {
 
 static const char* WorkerService_method_names[] = {
   "/workerservice.WorkerService/GetReplayData",
+  "/workerservice.WorkerService/JoinEvents",
 };
 
 std::unique_ptr< WorkerService::Stub> WorkerService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -33,6 +34,7 @@ std::unique_ptr< WorkerService::Stub> WorkerService::NewStub(const std::shared_p
 
 WorkerService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
   : channel_(channel), rpcmethod_GetReplayData_(WorkerService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_JoinEvents_(WorkerService_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status WorkerService::Stub::GetReplayData(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest& request, ::workerservice::WorkerQueryResponse* response) {
@@ -58,6 +60,29 @@ void WorkerService::Stub::async::GetReplayData(::grpc::ClientContext* context, c
   return result;
 }
 
+::grpc::Status WorkerService::Stub::JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::workerservice::JoinEventsResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::workerservice::JoinEventsRequest, ::workerservice::JoinEventsResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_JoinEvents_, context, request, response);
+}
+
+void WorkerService::Stub::async::JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::workerservice::JoinEventsRequest, ::workerservice::JoinEventsResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_JoinEvents_, context, request, response, std::move(f));
+}
+
+void WorkerService::Stub::async::JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_JoinEvents_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::workerservice::JoinEventsResponse>* WorkerService::Stub::PrepareAsyncJoinEventsRaw(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::workerservice::JoinEventsResponse, ::workerservice::JoinEventsRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_JoinEvents_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::workerservice::JoinEventsResponse>* WorkerService::Stub::AsyncJoinEventsRaw(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncJoinEventsRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
 WorkerService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       WorkerService_method_names[0],
@@ -69,12 +94,29 @@ WorkerService::Service::Service() {
              ::workerservice::WorkerQueryResponse* resp) {
                return service->GetReplayData(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      WorkerService_method_names[1],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< WorkerService::Service, ::workerservice::JoinEventsRequest, ::workerservice::JoinEventsResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](WorkerService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::workerservice::JoinEventsRequest* req,
+             ::workerservice::JoinEventsResponse* resp) {
+               return service->JoinEvents(ctx, req, resp);
+             }, this)));
 }
 
 WorkerService::Service::~Service() {
 }
 
 ::grpc::Status WorkerService::Service::GetReplayData(::grpc::ServerContext* context, const ::workerservice::WorkerQueryRequest* request, ::workerservice::WorkerQueryResponse* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status WorkerService::Service::JoinEvents(::grpc::ServerContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response) {
   (void) context;
   (void) request;
   (void) response;

@@ -106,9 +106,60 @@ struct WorkerQueryResponseDefaultTypeInternal {
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 WorkerQueryResponseDefaultTypeInternal _WorkerQueryResponse_default_instance_;
+
+inline constexpr JoinEventsResponse::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : joined_events_{},
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR JoinEventsResponse::JoinEventsResponse(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct JoinEventsResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR JoinEventsResponseDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~JoinEventsResponseDefaultTypeInternal() {}
+  union {
+    JoinEventsResponse _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 JoinEventsResponseDefaultTypeInternal _JoinEventsResponse_default_instance_;
+
+inline constexpr JoinEventsRequest::Impl_::Impl_(
+    ::_pbi::ConstantInitialized) noexcept
+      : left_events_{},
+        right_events_{},
+        join_type_{static_cast< ::workerservice::JoinType >(0)},
+        _cached_size_{0} {}
+
+template <typename>
+PROTOBUF_CONSTEXPR JoinEventsRequest::JoinEventsRequest(::_pbi::ConstantInitialized)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(_class_data_.base()),
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(),
+#endif  // PROTOBUF_CUSTOM_VTABLE
+      _impl_(::_pbi::ConstantInitialized()) {
+}
+struct JoinEventsRequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR JoinEventsRequestDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~JoinEventsRequestDefaultTypeInternal() {}
+  union {
+    JoinEventsRequest _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 JoinEventsRequestDefaultTypeInternal _JoinEventsRequest_default_instance_;
 }  // namespace workerservice
-static constexpr const ::_pb::EnumDescriptor**
-    file_level_enum_descriptors_worker_5fservice_2eproto = nullptr;
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_worker_5fservice_2eproto[1];
 static constexpr const ::_pb::ServiceDescriptor**
     file_level_service_descriptors_worker_5fservice_2eproto = nullptr;
 const ::uint32_t
@@ -135,6 +186,26 @@ const ::uint32_t
         ~0u,  // no sizeof(Split)
         PROTOBUF_FIELD_OFFSET(::workerservice::WorkerQueryResponse, _impl_.events_),
         ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::workerservice::JoinEventsRequest, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::workerservice::JoinEventsRequest, _impl_.left_events_),
+        PROTOBUF_FIELD_OFFSET(::workerservice::JoinEventsRequest, _impl_.right_events_),
+        PROTOBUF_FIELD_OFFSET(::workerservice::JoinEventsRequest, _impl_.join_type_),
+        ~0u,  // no _has_bits_
+        PROTOBUF_FIELD_OFFSET(::workerservice::JoinEventsResponse, _internal_metadata_),
+        ~0u,  // no _extensions_
+        ~0u,  // no _oneof_case_
+        ~0u,  // no _weak_field_map_
+        ~0u,  // no _inlined_string_donated_
+        ~0u,  // no _split_
+        ~0u,  // no sizeof(Split)
+        PROTOBUF_FIELD_OFFSET(::workerservice::JoinEventsResponse, _impl_.joined_events_),
+        ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::workerservice::Event, _internal_metadata_),
         ~0u,  // no _extensions_
         ~0u,  // no _oneof_case_
@@ -150,11 +221,15 @@ static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, -1, -1, sizeof(::workerservice::WorkerQueryRequest)},
         {11, -1, -1, sizeof(::workerservice::WorkerQueryResponse)},
-        {20, -1, -1, sizeof(::workerservice::Event)},
+        {20, -1, -1, sizeof(::workerservice::JoinEventsRequest)},
+        {31, -1, -1, sizeof(::workerservice::JoinEventsResponse)},
+        {40, -1, -1, sizeof(::workerservice::Event)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::workerservice::_WorkerQueryRequest_default_instance_._instance,
     &::workerservice::_WorkerQueryResponse_default_instance_._instance,
+    &::workerservice::_JoinEventsRequest_default_instance_._instance,
+    &::workerservice::_JoinEventsResponse_default_instance_._instance,
     &::workerservice::_Event_default_instance_._instance,
 };
 const char descriptor_table_protodef_worker_5fservice_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
@@ -163,22 +238,31 @@ const char descriptor_table_protodef_worker_5fservice_2eproto[] ABSL_ATTRIBUTE_S
     "\022WorkerQueryRequest\022\013\n\003cid\030\001 \001(\t\022\021\n\tstar"
     "t_eid\030\002 \001(\003\022\017\n\007end_eid\030\003 \001(\003\";\n\023WorkerQu"
     "eryResponse\022$\n\006events\030\001 \003(\0132\024.workerserv"
-    "ice.Event\"\"\n\005Event\022\013\n\003eid\030\001 \001(\003\022\014\n\004data\030"
-    "\002 \001(\t2g\n\rWorkerService\022V\n\rGetReplayData\022"
-    "!.workerservice.WorkerQueryRequest\032\".wor"
-    "kerservice.WorkerQueryResponseb\006proto3"
+    "ice.Event\"\226\001\n\021JoinEventsRequest\022)\n\013left_"
+    "events\030\001 \003(\0132\024.workerservice.Event\022*\n\014ri"
+    "ght_events\030\002 \003(\0132\024.workerservice.Event\022*"
+    "\n\tjoin_type\030\003 \001(\0162\027.workerservice.JoinTy"
+    "pe\"A\n\022JoinEventsResponse\022+\n\rjoined_event"
+    "s\030\001 \003(\0132\024.workerservice.Event\"\"\n\005Event\022\013"
+    "\n\003eid\030\001 \001(\003\022\014\n\004data\030\002 \001(\t*\037\n\010JoinType\022\t\n"
+    "\005INNER\020\000\022\010\n\004LEFT\020\0012\272\001\n\rWorkerService\022V\n\r"
+    "GetReplayData\022!.workerservice.WorkerQuer"
+    "yRequest\032\".workerservice.WorkerQueryResp"
+    "onse\022Q\n\nJoinEvents\022 .workerservice.JoinE"
+    "ventsRequest\032!.workerservice.JoinEventsR"
+    "esponseb\006proto3"
 };
 static ::absl::once_flag descriptor_table_worker_5fservice_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_worker_5fservice_2eproto = {
     false,
     false,
-    318,
+    655,
     descriptor_table_protodef_worker_5fservice_2eproto,
     "worker_service.proto",
     &descriptor_table_worker_5fservice_2eproto_once,
     nullptr,
     0,
-    3,
+    5,
     schemas,
     file_default_instances,
     TableStruct_worker_5fservice_2eproto::offsets,
@@ -186,6 +270,15 @@ PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_worker_5fservi
     file_level_service_descriptors_worker_5fservice_2eproto,
 };
 namespace workerservice {
+const ::google::protobuf::EnumDescriptor* JoinType_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_worker_5fservice_2eproto);
+  return file_level_enum_descriptors_worker_5fservice_2eproto[0];
+}
+PROTOBUF_CONSTINIT const uint32_t JoinType_internal_data_[] = {
+    131072u, 0u, };
+bool JoinType_IsValid(int value) {
+  return 0 <= value && value <= 1;
+}
 // ===================================================================
 
 class WorkerQueryRequest::_Internal {
@@ -695,6 +788,509 @@ void WorkerQueryResponse::InternalSwap(WorkerQueryResponse* PROTOBUF_RESTRICT ot
 }
 
 ::google::protobuf::Metadata WorkerQueryResponse::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class JoinEventsRequest::_Internal {
+ public:
+};
+
+JoinEventsRequest::JoinEventsRequest(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:workerservice.JoinEventsRequest)
+}
+inline PROTOBUF_NDEBUG_INLINE JoinEventsRequest::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::workerservice::JoinEventsRequest& from_msg)
+      : left_events_{visibility, arena, from.left_events_},
+        right_events_{visibility, arena, from.right_events_},
+        _cached_size_{0} {}
+
+JoinEventsRequest::JoinEventsRequest(
+    ::google::protobuf::Arena* arena,
+    const JoinEventsRequest& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  JoinEventsRequest* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+  _impl_.join_type_ = from._impl_.join_type_;
+
+  // @@protoc_insertion_point(copy_constructor:workerservice.JoinEventsRequest)
+}
+inline PROTOBUF_NDEBUG_INLINE JoinEventsRequest::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : left_events_{visibility, arena},
+        right_events_{visibility, arena},
+        _cached_size_{0} {}
+
+inline void JoinEventsRequest::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+  _impl_.join_type_ = {};
+}
+JoinEventsRequest::~JoinEventsRequest() {
+  // @@protoc_insertion_point(destructor:workerservice.JoinEventsRequest)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void JoinEventsRequest::SharedDtor() {
+  ABSL_DCHECK(GetArena() == nullptr);
+  _impl_.~Impl_();
+}
+
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::MessageLite::ClassDataFull
+    JoinEventsRequest::_class_data_ = {
+        ::google::protobuf::Message::ClassData{
+            &_JoinEventsRequest_default_instance_._instance,
+            &_table_.header,
+            nullptr,  // OnDemandRegisterArenaDtor
+            nullptr,  // IsInitialized
+            &JoinEventsRequest::MergeImpl,
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+            ::google::protobuf::Message::GetDeleteImpl<JoinEventsRequest>(),
+            ::google::protobuf::Message::GetNewImpl<JoinEventsRequest>(),
+            ::google::protobuf::Message::GetClearImpl<JoinEventsRequest>(), &JoinEventsRequest::ByteSizeLong,
+                &JoinEventsRequest::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+            PROTOBUF_FIELD_OFFSET(JoinEventsRequest, _impl_._cached_size_),
+            false,
+        },
+        &JoinEventsRequest::kDescriptorMethods,
+        &descriptor_table_worker_5fservice_2eproto,
+        nullptr,  // tracker
+};
+const ::google::protobuf::MessageLite::ClassData* JoinEventsRequest::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<2, 3, 2, 0, 2> JoinEventsRequest::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    3, 24,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967288,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    3,  // num_field_entries
+    2,  // num_aux_entries
+    offsetof(decltype(_table_), aux_entries),
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::workerservice::JoinEventsRequest>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    {::_pbi::TcParser::MiniParse, {}},
+    // repeated .workerservice.Event left_events = 1;
+    {::_pbi::TcParser::FastMtR1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(JoinEventsRequest, _impl_.left_events_)}},
+    // repeated .workerservice.Event right_events = 2;
+    {::_pbi::TcParser::FastMtR1,
+     {18, 63, 1, PROTOBUF_FIELD_OFFSET(JoinEventsRequest, _impl_.right_events_)}},
+    // .workerservice.JoinType join_type = 3;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(JoinEventsRequest, _impl_.join_type_), 63>(),
+     {24, 63, 0, PROTOBUF_FIELD_OFFSET(JoinEventsRequest, _impl_.join_type_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // repeated .workerservice.Event left_events = 1;
+    {PROTOBUF_FIELD_OFFSET(JoinEventsRequest, _impl_.left_events_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+    // repeated .workerservice.Event right_events = 2;
+    {PROTOBUF_FIELD_OFFSET(JoinEventsRequest, _impl_.right_events_), 0, 1,
+    (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+    // .workerservice.JoinType join_type = 3;
+    {PROTOBUF_FIELD_OFFSET(JoinEventsRequest, _impl_.join_type_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
+  }}, {{
+    {::_pbi::TcParser::GetTable<::workerservice::Event>()},
+    {::_pbi::TcParser::GetTable<::workerservice::Event>()},
+  }}, {{
+  }},
+};
+
+PROTOBUF_NOINLINE void JoinEventsRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:workerservice.JoinEventsRequest)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.left_events_.Clear();
+  _impl_.right_events_.Clear();
+  _impl_.join_type_ = 0;
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* JoinEventsRequest::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const JoinEventsRequest& this_ = static_cast<const JoinEventsRequest&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* JoinEventsRequest::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const JoinEventsRequest& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:workerservice.JoinEventsRequest)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // repeated .workerservice.Event left_events = 1;
+          for (unsigned i = 0, n = static_cast<unsigned>(
+                                   this_._internal_left_events_size());
+               i < n; i++) {
+            const auto& repfield = this_._internal_left_events().Get(i);
+            target =
+                ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+                    1, repfield, repfield.GetCachedSize(),
+                    target, stream);
+          }
+
+          // repeated .workerservice.Event right_events = 2;
+          for (unsigned i = 0, n = static_cast<unsigned>(
+                                   this_._internal_right_events_size());
+               i < n; i++) {
+            const auto& repfield = this_._internal_right_events().Get(i);
+            target =
+                ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+                    2, repfield, repfield.GetCachedSize(),
+                    target, stream);
+          }
+
+          // .workerservice.JoinType join_type = 3;
+          if (this_._internal_join_type() != 0) {
+            target = stream->EnsureSpace(target);
+            target = ::_pbi::WireFormatLite::WriteEnumToArray(
+                3, this_._internal_join_type(), target);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:workerservice.JoinEventsRequest)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t JoinEventsRequest::ByteSizeLong(const MessageLite& base) {
+          const JoinEventsRequest& this_ = static_cast<const JoinEventsRequest&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t JoinEventsRequest::ByteSizeLong() const {
+          const JoinEventsRequest& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:workerservice.JoinEventsRequest)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // repeated .workerservice.Event left_events = 1;
+             {
+              total_size += 1UL * this_._internal_left_events_size();
+              for (const auto& msg : this_._internal_left_events()) {
+                total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+              }
+            }
+            // repeated .workerservice.Event right_events = 2;
+             {
+              total_size += 1UL * this_._internal_right_events_size();
+              for (const auto& msg : this_._internal_right_events()) {
+                total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+              }
+            }
+          }
+           {
+            // .workerservice.JoinType join_type = 3;
+            if (this_._internal_join_type() != 0) {
+              total_size += 1 +
+                            ::_pbi::WireFormatLite::EnumSize(this_._internal_join_type());
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void JoinEventsRequest::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<JoinEventsRequest*>(&to_msg);
+  auto& from = static_cast<const JoinEventsRequest&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:workerservice.JoinEventsRequest)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_left_events()->MergeFrom(
+      from._internal_left_events());
+  _this->_internal_mutable_right_events()->MergeFrom(
+      from._internal_right_events());
+  if (from._internal_join_type() != 0) {
+    _this->_impl_.join_type_ = from._impl_.join_type_;
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void JoinEventsRequest::CopyFrom(const JoinEventsRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:workerservice.JoinEventsRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void JoinEventsRequest::InternalSwap(JoinEventsRequest* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.left_events_.InternalSwap(&other->_impl_.left_events_);
+  _impl_.right_events_.InternalSwap(&other->_impl_.right_events_);
+  swap(_impl_.join_type_, other->_impl_.join_type_);
+}
+
+::google::protobuf::Metadata JoinEventsRequest::GetMetadata() const {
+  return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
+}
+// ===================================================================
+
+class JoinEventsResponse::_Internal {
+ public:
+};
+
+JoinEventsResponse::JoinEventsResponse(::google::protobuf::Arena* arena)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:workerservice.JoinEventsResponse)
+}
+inline PROTOBUF_NDEBUG_INLINE JoinEventsResponse::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility, ::google::protobuf::Arena* arena,
+    const Impl_& from, const ::workerservice::JoinEventsResponse& from_msg)
+      : joined_events_{visibility, arena, from.joined_events_},
+        _cached_size_{0} {}
+
+JoinEventsResponse::JoinEventsResponse(
+    ::google::protobuf::Arena* arena,
+    const JoinEventsResponse& from)
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+    : ::google::protobuf::Message(arena, _class_data_.base()) {
+#else   // PROTOBUF_CUSTOM_VTABLE
+    : ::google::protobuf::Message(arena) {
+#endif  // PROTOBUF_CUSTOM_VTABLE
+  JoinEventsResponse* const _this = this;
+  (void)_this;
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  new (&_impl_) Impl_(internal_visibility(), arena, from._impl_, from);
+
+  // @@protoc_insertion_point(copy_constructor:workerservice.JoinEventsResponse)
+}
+inline PROTOBUF_NDEBUG_INLINE JoinEventsResponse::Impl_::Impl_(
+    ::google::protobuf::internal::InternalVisibility visibility,
+    ::google::protobuf::Arena* arena)
+      : joined_events_{visibility, arena},
+        _cached_size_{0} {}
+
+inline void JoinEventsResponse::SharedCtor(::_pb::Arena* arena) {
+  new (&_impl_) Impl_(internal_visibility(), arena);
+}
+JoinEventsResponse::~JoinEventsResponse() {
+  // @@protoc_insertion_point(destructor:workerservice.JoinEventsResponse)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void JoinEventsResponse::SharedDtor() {
+  ABSL_DCHECK(GetArena() == nullptr);
+  _impl_.~Impl_();
+}
+
+PROTOBUF_CONSTINIT
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::google::protobuf::MessageLite::ClassDataFull
+    JoinEventsResponse::_class_data_ = {
+        ::google::protobuf::Message::ClassData{
+            &_JoinEventsResponse_default_instance_._instance,
+            &_table_.header,
+            nullptr,  // OnDemandRegisterArenaDtor
+            nullptr,  // IsInitialized
+            &JoinEventsResponse::MergeImpl,
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+            ::google::protobuf::Message::GetDeleteImpl<JoinEventsResponse>(),
+            ::google::protobuf::Message::GetNewImpl<JoinEventsResponse>(),
+            ::google::protobuf::Message::GetClearImpl<JoinEventsResponse>(), &JoinEventsResponse::ByteSizeLong,
+                &JoinEventsResponse::_InternalSerialize,
+#endif  // PROTOBUF_CUSTOM_VTABLE
+            PROTOBUF_FIELD_OFFSET(JoinEventsResponse, _impl_._cached_size_),
+            false,
+        },
+        &JoinEventsResponse::kDescriptorMethods,
+        &descriptor_table_worker_5fservice_2eproto,
+        nullptr,  // tracker
+};
+const ::google::protobuf::MessageLite::ClassData* JoinEventsResponse::GetClassData() const {
+  ::google::protobuf::internal::PrefetchToLocalCache(&_class_data_);
+  ::google::protobuf::internal::PrefetchToLocalCache(_class_data_.tc_table);
+  return _class_data_.base();
+}
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<0, 1, 1, 0, 2> JoinEventsResponse::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    1, 0,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967294,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    1,  // num_field_entries
+    1,  // num_aux_entries
+    offsetof(decltype(_table_), aux_entries),
+    _class_data_.base(),
+    nullptr,  // post_loop_handler
+    ::_pbi::TcParser::GenericFallback,  // fallback
+    #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
+    ::_pbi::TcParser::GetTable<::workerservice::JoinEventsResponse>(),  // to_prefetch
+    #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
+  }, {{
+    // repeated .workerservice.Event joined_events = 1;
+    {::_pbi::TcParser::FastMtR1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(JoinEventsResponse, _impl_.joined_events_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // repeated .workerservice.Event joined_events = 1;
+    {PROTOBUF_FIELD_OFFSET(JoinEventsResponse, _impl_.joined_events_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+  }}, {{
+    {::_pbi::TcParser::GetTable<::workerservice::Event>()},
+  }}, {{
+  }},
+};
+
+PROTOBUF_NOINLINE void JoinEventsResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:workerservice.JoinEventsResponse)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.joined_events_.Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::uint8_t* JoinEventsResponse::_InternalSerialize(
+            const MessageLite& base, ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) {
+          const JoinEventsResponse& this_ = static_cast<const JoinEventsResponse&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::uint8_t* JoinEventsResponse::_InternalSerialize(
+            ::uint8_t* target,
+            ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+          const JoinEventsResponse& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(serialize_to_array_start:workerservice.JoinEventsResponse)
+          ::uint32_t cached_has_bits = 0;
+          (void)cached_has_bits;
+
+          // repeated .workerservice.Event joined_events = 1;
+          for (unsigned i = 0, n = static_cast<unsigned>(
+                                   this_._internal_joined_events_size());
+               i < n; i++) {
+            const auto& repfield = this_._internal_joined_events().Get(i);
+            target =
+                ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
+                    1, repfield, repfield.GetCachedSize(),
+                    target, stream);
+          }
+
+          if (PROTOBUF_PREDICT_FALSE(this_._internal_metadata_.have_unknown_fields())) {
+            target =
+                ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+                    this_._internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+          }
+          // @@protoc_insertion_point(serialize_to_array_end:workerservice.JoinEventsResponse)
+          return target;
+        }
+
+#if defined(PROTOBUF_CUSTOM_VTABLE)
+        ::size_t JoinEventsResponse::ByteSizeLong(const MessageLite& base) {
+          const JoinEventsResponse& this_ = static_cast<const JoinEventsResponse&>(base);
+#else   // PROTOBUF_CUSTOM_VTABLE
+        ::size_t JoinEventsResponse::ByteSizeLong() const {
+          const JoinEventsResponse& this_ = *this;
+#endif  // PROTOBUF_CUSTOM_VTABLE
+          // @@protoc_insertion_point(message_byte_size_start:workerservice.JoinEventsResponse)
+          ::size_t total_size = 0;
+
+          ::uint32_t cached_has_bits = 0;
+          // Prevent compiler warnings about cached_has_bits being unused
+          (void)cached_has_bits;
+
+          ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+           {
+            // repeated .workerservice.Event joined_events = 1;
+             {
+              total_size += 1UL * this_._internal_joined_events_size();
+              for (const auto& msg : this_._internal_joined_events()) {
+                total_size += ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+              }
+            }
+          }
+          return this_.MaybeComputeUnknownFieldsSize(total_size,
+                                                     &this_._impl_._cached_size_);
+        }
+
+void JoinEventsResponse::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<JoinEventsResponse*>(&to_msg);
+  auto& from = static_cast<const JoinEventsResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:workerservice.JoinEventsResponse)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_joined_events()->MergeFrom(
+      from._internal_joined_events());
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void JoinEventsResponse::CopyFrom(const JoinEventsResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:workerservice.JoinEventsResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+
+void JoinEventsResponse::InternalSwap(JoinEventsResponse* PROTOBUF_RESTRICT other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.joined_events_.InternalSwap(&other->_impl_.joined_events_);
+}
+
+::google::protobuf::Metadata JoinEventsResponse::GetMetadata() const {
   return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
 }
 // ===================================================================

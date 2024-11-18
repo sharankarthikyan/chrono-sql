@@ -8,6 +8,8 @@ using grpc::ServerContext;
 using grpc::Status;
 using workerservice::WorkerQueryRequest;
 using workerservice::WorkerQueryResponse;
+using workerservice::JoinEventsRequest;
+using workerservice::JoinEventsResponse;
 
 class WorkerServiceImpl final : public workerservice::WorkerService::Service {
 public:
@@ -30,6 +32,61 @@ public:
             workerservice::Event* e = response->add_events();
             e->set_eid(event.first);
             e->set_data(event.second);
+        }
+
+        return Status::OK;
+    }
+
+   Status JoinEvents(ServerContext* context, const JoinEventsRequest* request,
+                     JoinEventsResponse* response) override {
+        // Create a map for left events based on EID
+        std::unordered_map<int64_t, std::string> left_map;
+        for (const auto& event : request->left_events()) {
+            left_map[event.eid()] = event.data();
+        }
+
+        // Create a map for right events based on EID
+        std::unordered_map<int64_t, std::string> right_map;
+        for (const auto& event : request->right_events()) {
+            right_map[event.eid()] = event.data();
+        }
+
+        workerservice::JoinType join_type = request->join_type();
+
+        if (join_type == workerservice::JoinType::INNER) {
+            // Perform Inner Join
+            for (const auto& [eid, left_data] : left_map) {
+                auto it = right_map.find(eid);
+                if (it != right_map.end()) {
+                    // EID match found, combine data
+                    std::string combined_data = left_data + " | " + it->second;
+                    workerservice::Event* joined_event = response->add_joined_events();
+                    joined_event->set_eid(eid);
+                    joined_event->set_data(combined_data);
+                }
+            }
+        }
+        else if (join_type == workerservice::JoinType::LEFT) {
+            // Perform Left Join
+            for (const auto& [eid, left_data] : left_map) {
+                auto it = right_map.find(eid);
+                if (it != right_map.end()) {
+                    // EID match found, combine data
+                    std::string combined_data = left_data + " | " + it->second;
+                    workerservice::Event* joined_event = response->add_joined_events();
+                    joined_event->set_eid(eid);
+                    joined_event->set_data(combined_data);
+                }
+                else {
+                    // No match found, include left event data only
+                    workerservice::Event* joined_event = response->add_joined_events();
+                    joined_event->set_eid(eid);
+                    joined_event->set_data(left_data + " | "); // Right data is empty
+                }
+            }
+        }
+        else {
+            return Status(grpc::INVALID_ARGUMENT, "Unsupported join type.");
         }
 
         return Status::OK;

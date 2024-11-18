@@ -457,34 +457,67 @@ std::string ChronoSQLParser::longToChar(long value) {
     return std::to_string(value);
 }
 
-std::unique_ptr<std::list<std::pair<EID, std::string>>> ChronoSQLParser::executeJoin(const hsql::JoinDefinition* joinDef, const std::list<ConditionExpression*>* conditions) {
+std::list<std::pair<int64_t, std::string>> ChronoSQLParser::convertEIDListToInt64(const std::list<std::pair<EID, std::string>>& events) {
+    std::list<std::pair<int64_t, std::string>> converted;
+    // converted.reserve(events.size()); // Optional: reserve space for efficiency
+    for (const auto& event : events) {
+        converted.emplace_back(static_cast<int64_t>(event.first), event.second);
+    }
+    return converted;
+}
+
+// Helper function to convert int64_t list back to EID list
+std::list<std::pair<EID, std::string>> ChronoSQLParser::convertInt64ListToEID(const std::list<std::pair<int64_t, std::string>>& events) {
+    std::list<std::pair<EID, std::string>> converted;
+    // converted.reserve(events.size()); // Optional: reserve space for efficiency
+    for (const auto& event : events) {
+        converted.emplace_back(static_cast<EID>(event.first), event.second);
+    }
+    return converted;
+}
+
+std::unique_ptr<std::list<std::pair<EID, std::string>>> ChronoSQLParser::executeJoin(
+    const hsql::JoinDefinition* joinDef, 
+    const std::list<ConditionExpression*>* conditions) {
+
     auto interval_ptr = this->extractInterval(conditions);
 
-    auto leftEvents = this->getReplayDataFromWorker(joinDef->left->getName(), interval_ptr->startEID, interval_ptr->endEID);
-    auto rightEvents = this->getReplayDataFromWorker(joinDef->right->getName(), interval_ptr->startEID, interval_ptr->endEID);
+    // Retrieve left and right events from workers
+    auto leftEventsList = this->getReplayDataFromWorker(joinDef->left->getName(), interval_ptr->startEID, interval_ptr->endEID);
+    auto rightEventsList = this->getReplayDataFromWorker(joinDef->right->getName(), interval_ptr->startEID, interval_ptr->endEID);
 
-    auto joinResults = std::make_unique<std::list<std::pair<EID, std::string>>>();
+    // Convert to the required type
+    std::list<std::pair<int64_t, std::string>> leftEvents_converted = convertEIDListToInt64(*leftEventsList);
+    std::list<std::pair<int64_t, std::string>> rightEvents_converted = convertEIDListToInt64(*rightEventsList);
 
-    if (joinDef->type == hsql::kJoinInner || joinDef->type == hsql::kJoinLeft) {
-        for (const auto& leftEvent : *leftEvents) {
-            bool matchFound = false;
-            for (const auto& rightEvent : *rightEvents) {
-                if (rightEvent.first > leftEvent.first) {
-                    break;
-                }
-                if (evaluateJoinCondition(leftEvent, rightEvent, joinDef->condition)) {
-                    std::string combinedPayload = leftEvent.second + " | " + rightEvent.second;
-                    joinResults->emplace_back(leftEvent.first, combinedPayload);
-                    matchFound = true;
-                }
-            }
-            if (joinDef->type == hsql::kJoinLeft && !matchFound) {
-                joinResults->emplace_back(leftEvent.first, leftEvent.second);
-            }
+    // Determine the join type based on JoinDefinition
+    workerservice::JoinType joinType = workerservice::JoinType::INNER; // Default to INNER
+
+    // Assuming JoinDefinition has a type indicating INNER or LEFT
+    // You may need to adjust based on your actual JoinDefinition structure
+    if (joinDef->type == hsql::kJoinLeft) {
+        joinType = workerservice::JoinType::LEFT;
+    }
+    // Add more conditions if supporting other join types
+
+    // Attempt to join using a randomly selected worker
+    int retries = worker_clients_.size();
+    while (retries-- > 0) {
+        int index = dist_(rng_);
+        try {
+            // Perform join via the worker client
+            auto joinedEventsInt64 = worker_clients_[index].joinEvents(leftEvents_converted, rightEvents_converted, joinType);
+            
+            // Convert back to EID type
+            auto joinedEventsEID = convertInt64ListToEID(joinedEventsInt64);
+            
+            return std::make_unique<std::list<std::pair<EID, std::string>>>(joinedEventsEID);
+        } catch (const std::exception& e) {
+            std::cerr << "Worker " << index << " failed to join events: " << e.what() << std::endl;
         }
     }
 
-    return joinResults;
+    throw std::runtime_error("All workers failed to perform join.");
 }
 
 bool ChronoSQLParser::evaluateJoinCondition(const std::pair<EID, std::string>& leftEvent, const std::pair<EID, std::string>& rightEvent, const hsql::Expr* condition) {

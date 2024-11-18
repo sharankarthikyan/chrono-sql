@@ -15,6 +15,11 @@ public:
 
     std::list<std::pair<int64_t, std::string>> getReplayData(const std::string& cid, int64_t startEID, int64_t endEID);
 
+    std::list<std::pair<int64_t, std::string>> joinEvents(
+        const std::list<std::pair<int64_t, std::string>>& leftEvents,
+        const std::list<std::pair<int64_t, std::string>>& rightEvents,
+        workerservice::JoinType joinType);
+
 private:
     std::unique_ptr<workerservice::WorkerService::Stub> stub_;
 };

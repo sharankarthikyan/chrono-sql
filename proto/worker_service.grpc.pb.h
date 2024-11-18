@@ -43,11 +43,22 @@ class WorkerService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::WorkerQueryResponse>> PrepareAsyncGetReplayData(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::WorkerQueryResponse>>(PrepareAsyncGetReplayDataRaw(context, request, cq));
     }
+    virtual ::grpc::Status JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::workerservice::JoinEventsResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::JoinEventsResponse>> AsyncJoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::JoinEventsResponse>>(AsyncJoinEventsRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::JoinEventsResponse>> PrepareAsyncJoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::JoinEventsResponse>>(PrepareAsyncJoinEventsRaw(context, request, cq));
+    }
+    // New RPC
     class async_interface {
      public:
       virtual ~async_interface() {}
       virtual void GetReplayData(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest* request, ::workerservice::WorkerQueryResponse* response, std::function<void(::grpc::Status)>) = 0;
       virtual void GetReplayData(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest* request, ::workerservice::WorkerQueryResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      // New RPC
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -55,6 +66,8 @@ class WorkerService final {
    private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::WorkerQueryResponse>* AsyncGetReplayDataRaw(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::WorkerQueryResponse>* PrepareAsyncGetReplayDataRaw(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::JoinEventsResponse>* AsyncJoinEventsRaw(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::workerservice::JoinEventsResponse>* PrepareAsyncJoinEventsRaw(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -66,11 +79,20 @@ class WorkerService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::workerservice::WorkerQueryResponse>> PrepareAsyncGetReplayData(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::workerservice::WorkerQueryResponse>>(PrepareAsyncGetReplayDataRaw(context, request, cq));
     }
+    ::grpc::Status JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::workerservice::JoinEventsResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::workerservice::JoinEventsResponse>> AsyncJoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::workerservice::JoinEventsResponse>>(AsyncJoinEventsRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::workerservice::JoinEventsResponse>> PrepareAsyncJoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::workerservice::JoinEventsResponse>>(PrepareAsyncJoinEventsRaw(context, request, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
       void GetReplayData(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest* request, ::workerservice::WorkerQueryResponse* response, std::function<void(::grpc::Status)>) override;
       void GetReplayData(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest* request, ::workerservice::WorkerQueryResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response, std::function<void(::grpc::Status)>) override;
+      void JoinEvents(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -84,7 +106,10 @@ class WorkerService final {
     class async async_stub_{this};
     ::grpc::ClientAsyncResponseReader< ::workerservice::WorkerQueryResponse>* AsyncGetReplayDataRaw(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::workerservice::WorkerQueryResponse>* PrepareAsyncGetReplayDataRaw(::grpc::ClientContext* context, const ::workerservice::WorkerQueryRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::workerservice::JoinEventsResponse>* AsyncJoinEventsRaw(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::workerservice::JoinEventsResponse>* PrepareAsyncJoinEventsRaw(::grpc::ClientContext* context, const ::workerservice::JoinEventsRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_GetReplayData_;
+    const ::grpc::internal::RpcMethod rpcmethod_JoinEvents_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -93,6 +118,8 @@ class WorkerService final {
     Service();
     virtual ~Service();
     virtual ::grpc::Status GetReplayData(::grpc::ServerContext* context, const ::workerservice::WorkerQueryRequest* request, ::workerservice::WorkerQueryResponse* response);
+    virtual ::grpc::Status JoinEvents(::grpc::ServerContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response);
+    // New RPC
   };
   template <class BaseClass>
   class WithAsyncMethod_GetReplayData : public BaseClass {
@@ -114,7 +141,27 @@ class WorkerService final {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_GetReplayData<Service > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_JoinEvents : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_JoinEvents() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_JoinEvents() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status JoinEvents(::grpc::ServerContext* /*context*/, const ::workerservice::JoinEventsRequest* /*request*/, ::workerservice::JoinEventsResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestJoinEvents(::grpc::ServerContext* context, ::workerservice::JoinEventsRequest* request, ::grpc::ServerAsyncResponseWriter< ::workerservice::JoinEventsResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_GetReplayData<WithAsyncMethod_JoinEvents<Service > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_GetReplayData : public BaseClass {
    private:
@@ -142,7 +189,34 @@ class WorkerService final {
     virtual ::grpc::ServerUnaryReactor* GetReplayData(
       ::grpc::CallbackServerContext* /*context*/, const ::workerservice::WorkerQueryRequest* /*request*/, ::workerservice::WorkerQueryResponse* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_GetReplayData<Service > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_JoinEvents : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_JoinEvents() {
+      ::grpc::Service::MarkMethodCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::workerservice::JoinEventsRequest, ::workerservice::JoinEventsResponse>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::workerservice::JoinEventsRequest* request, ::workerservice::JoinEventsResponse* response) { return this->JoinEvents(context, request, response); }));}
+    void SetMessageAllocatorFor_JoinEvents(
+        ::grpc::MessageAllocator< ::workerservice::JoinEventsRequest, ::workerservice::JoinEventsResponse>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::workerservice::JoinEventsRequest, ::workerservice::JoinEventsResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_JoinEvents() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status JoinEvents(::grpc::ServerContext* /*context*/, const ::workerservice::JoinEventsRequest* /*request*/, ::workerservice::JoinEventsResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* JoinEvents(
+      ::grpc::CallbackServerContext* /*context*/, const ::workerservice::JoinEventsRequest* /*request*/, ::workerservice::JoinEventsResponse* /*response*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_GetReplayData<WithCallbackMethod_JoinEvents<Service > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_GetReplayData : public BaseClass {
@@ -157,6 +231,23 @@ class WorkerService final {
     }
     // disable synchronous version of this method
     ::grpc::Status GetReplayData(::grpc::ServerContext* /*context*/, const ::workerservice::WorkerQueryRequest* /*request*/, ::workerservice::WorkerQueryResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_JoinEvents : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_JoinEvents() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_JoinEvents() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status JoinEvents(::grpc::ServerContext* /*context*/, const ::workerservice::JoinEventsRequest* /*request*/, ::workerservice::JoinEventsResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -182,6 +273,26 @@ class WorkerService final {
     }
   };
   template <class BaseClass>
+  class WithRawMethod_JoinEvents : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_JoinEvents() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_JoinEvents() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status JoinEvents(::grpc::ServerContext* /*context*/, const ::workerservice::JoinEventsRequest* /*request*/, ::workerservice::JoinEventsResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestJoinEvents(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithRawCallbackMethod_GetReplayData : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -201,6 +312,28 @@ class WorkerService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* GetReplayData(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_JoinEvents : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_JoinEvents() {
+      ::grpc::Service::MarkMethodRawCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->JoinEvents(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_JoinEvents() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status JoinEvents(::grpc::ServerContext* /*context*/, const ::workerservice::JoinEventsRequest* /*request*/, ::workerservice::JoinEventsResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* JoinEvents(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
@@ -230,9 +363,36 @@ class WorkerService final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedGetReplayData(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::workerservice::WorkerQueryRequest,::workerservice::WorkerQueryResponse>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_GetReplayData<Service > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_JoinEvents : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_JoinEvents() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::workerservice::JoinEventsRequest, ::workerservice::JoinEventsResponse>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::workerservice::JoinEventsRequest, ::workerservice::JoinEventsResponse>* streamer) {
+                       return this->StreamedJoinEvents(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_JoinEvents() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status JoinEvents(::grpc::ServerContext* /*context*/, const ::workerservice::JoinEventsRequest* /*request*/, ::workerservice::JoinEventsResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedJoinEvents(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::workerservice::JoinEventsRequest,::workerservice::JoinEventsResponse>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_GetReplayData<WithStreamedUnaryMethod_JoinEvents<Service > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_GetReplayData<Service > StreamedService;
+  typedef WithStreamedUnaryMethod_GetReplayData<WithStreamedUnaryMethod_JoinEvents<Service > > StreamedService;
 };
 
 }  // namespace workerservice

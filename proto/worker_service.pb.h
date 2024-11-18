@@ -27,6 +27,7 @@
 #include "google/protobuf/message.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
+#include "google/protobuf/generated_enum_reflection.h"
 #include "google/protobuf/unknown_field_set.h"
 // @@protoc_insertion_point(includes)
 
@@ -53,6 +54,12 @@ namespace workerservice {
 class Event;
 struct EventDefaultTypeInternal;
 extern EventDefaultTypeInternal _Event_default_instance_;
+class JoinEventsRequest;
+struct JoinEventsRequestDefaultTypeInternal;
+extern JoinEventsRequestDefaultTypeInternal _JoinEventsRequest_default_instance_;
+class JoinEventsResponse;
+struct JoinEventsResponseDefaultTypeInternal;
+extern JoinEventsResponseDefaultTypeInternal _JoinEventsResponse_default_instance_;
 class WorkerQueryRequest;
 struct WorkerQueryRequestDefaultTypeInternal;
 extern WorkerQueryRequestDefaultTypeInternal _WorkerQueryRequest_default_instance_;
@@ -66,6 +73,39 @@ namespace protobuf {
 }  // namespace google
 
 namespace workerservice {
+enum JoinType : int {
+  INNER = 0,
+  LEFT = 1,
+  JoinType_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::min(),
+  JoinType_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::max(),
+};
+
+bool JoinType_IsValid(int value);
+extern const uint32_t JoinType_internal_data_[];
+constexpr JoinType JoinType_MIN = static_cast<JoinType>(0);
+constexpr JoinType JoinType_MAX = static_cast<JoinType>(1);
+constexpr int JoinType_ARRAYSIZE = 1 + 1;
+const ::google::protobuf::EnumDescriptor*
+JoinType_descriptor();
+template <typename T>
+const std::string& JoinType_Name(T value) {
+  static_assert(std::is_same<T, JoinType>::value ||
+                    std::is_integral<T>::value,
+                "Incorrect type passed to JoinType_Name().");
+  return JoinType_Name(static_cast<JoinType>(value));
+}
+template <>
+inline const std::string& JoinType_Name(JoinType value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<JoinType_descriptor,
+                                                 0, 1>(
+      static_cast<int>(value));
+}
+inline bool JoinType_Parse(absl::string_view name, JoinType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<JoinType>(
+      JoinType_descriptor(), name, value);
+}
 
 // ===================================================================
 
@@ -345,7 +385,7 @@ class Event final : public ::google::protobuf::Message
     return reinterpret_cast<const Event*>(
         &_Event_default_instance_);
   }
-  static constexpr int kIndexInFileMessages = 2;
+  static constexpr int kIndexInFileMessages = 4;
   friend void swap(Event& a, Event& b) { a.Swap(&b); }
   inline void Swap(Event* other) {
     if (other == this) return;
@@ -689,6 +729,427 @@ class WorkerQueryResponse final : public ::google::protobuf::Message
   union { Impl_ _impl_; };
   friend struct ::TableStruct_worker_5fservice_2eproto;
 };
+// -------------------------------------------------------------------
+
+class JoinEventsResponse final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:workerservice.JoinEventsResponse) */ {
+ public:
+  inline JoinEventsResponse() : JoinEventsResponse(nullptr) {}
+  ~JoinEventsResponse() PROTOBUF_FINAL;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR JoinEventsResponse(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline JoinEventsResponse(const JoinEventsResponse& from) : JoinEventsResponse(nullptr, from) {}
+  inline JoinEventsResponse(JoinEventsResponse&& from) noexcept
+      : JoinEventsResponse(nullptr, std::move(from)) {}
+  inline JoinEventsResponse& operator=(const JoinEventsResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline JoinEventsResponse& operator=(JoinEventsResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const JoinEventsResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const JoinEventsResponse* internal_default_instance() {
+    return reinterpret_cast<const JoinEventsResponse*>(
+        &_JoinEventsResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 3;
+  friend void swap(JoinEventsResponse& a, JoinEventsResponse& b) { a.Swap(&b); }
+  inline void Swap(JoinEventsResponse* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(JoinEventsResponse* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  JoinEventsResponse* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<JoinEventsResponse>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const JoinEventsResponse& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const JoinEventsResponse& from) { JoinEventsResponse::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* _InternalSerialize(
+      const MessageLite& msg, ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(JoinEventsResponse* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "workerservice.JoinEventsResponse"; }
+
+ protected:
+  explicit JoinEventsResponse(::google::protobuf::Arena* arena);
+  JoinEventsResponse(::google::protobuf::Arena* arena, const JoinEventsResponse& from);
+  JoinEventsResponse(::google::protobuf::Arena* arena, JoinEventsResponse&& from) noexcept
+      : JoinEventsResponse(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
+  static const ::google::protobuf::Message::ClassDataFull _class_data_;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kJoinedEventsFieldNumber = 1,
+  };
+  // repeated .workerservice.Event joined_events = 1;
+  int joined_events_size() const;
+  private:
+  int _internal_joined_events_size() const;
+
+  public:
+  void clear_joined_events() ;
+  ::workerservice::Event* mutable_joined_events(int index);
+  ::google::protobuf::RepeatedPtrField<::workerservice::Event>* mutable_joined_events();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& _internal_joined_events() const;
+  ::google::protobuf::RepeatedPtrField<::workerservice::Event>* _internal_mutable_joined_events();
+  public:
+  const ::workerservice::Event& joined_events(int index) const;
+  ::workerservice::Event* add_joined_events();
+  const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& joined_events() const;
+  // @@protoc_insertion_point(class_scope:workerservice.JoinEventsResponse)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      0, 1, 1,
+      0, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_JoinEventsResponse_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const JoinEventsResponse& from_msg);
+    ::google::protobuf::RepeatedPtrField< ::workerservice::Event > joined_events_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_worker_5fservice_2eproto;
+};
+// -------------------------------------------------------------------
+
+class JoinEventsRequest final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:workerservice.JoinEventsRequest) */ {
+ public:
+  inline JoinEventsRequest() : JoinEventsRequest(nullptr) {}
+  ~JoinEventsRequest() PROTOBUF_FINAL;
+  template <typename = void>
+  explicit PROTOBUF_CONSTEXPR JoinEventsRequest(
+      ::google::protobuf::internal::ConstantInitialized);
+
+  inline JoinEventsRequest(const JoinEventsRequest& from) : JoinEventsRequest(nullptr, from) {}
+  inline JoinEventsRequest(JoinEventsRequest&& from) noexcept
+      : JoinEventsRequest(nullptr, std::move(from)) {}
+  inline JoinEventsRequest& operator=(const JoinEventsRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline JoinEventsRequest& operator=(JoinEventsRequest&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetArena() == from.GetArena()
+#ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetArena() != nullptr
+#endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields()
+      ABSL_ATTRIBUTE_LIFETIME_BOUND {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const JoinEventsRequest& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const JoinEventsRequest* internal_default_instance() {
+    return reinterpret_cast<const JoinEventsRequest*>(
+        &_JoinEventsRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages = 2;
+  friend void swap(JoinEventsRequest& a, JoinEventsRequest& b) { a.Swap(&b); }
+  inline void Swap(JoinEventsRequest* other) {
+    if (other == this) return;
+#ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() != nullptr && GetArena() == other->GetArena()) {
+#else   // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetArena() == other->GetArena()) {
+#endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(JoinEventsRequest* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  JoinEventsRequest* New(::google::protobuf::Arena* arena = nullptr) const PROTOBUF_FINAL {
+    return ::google::protobuf::Message::DefaultConstruct<JoinEventsRequest>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const JoinEventsRequest& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom(const JoinEventsRequest& from) { JoinEventsRequest::MergeImpl(*this, from); }
+
+  private:
+  static void MergeImpl(
+      ::google::protobuf::MessageLite& to_msg,
+      const ::google::protobuf::MessageLite& from_msg);
+
+  public:
+  bool IsInitialized() const {
+    return true;
+  }
+  ABSL_ATTRIBUTE_REINITIALIZES void Clear() PROTOBUF_FINAL;
+  #if defined(PROTOBUF_CUSTOM_VTABLE)
+  private:
+  static ::size_t ByteSizeLong(const ::google::protobuf::MessageLite& msg);
+  static ::uint8_t* _InternalSerialize(
+      const MessageLite& msg, ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream);
+
+  public:
+  ::size_t ByteSizeLong() const { return ByteSizeLong(*this); }
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+    return _InternalSerialize(*this, target, stream);
+  }
+  #else   // PROTOBUF_CUSTOM_VTABLE
+  ::size_t ByteSizeLong() const final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target,
+      ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  #endif  // PROTOBUF_CUSTOM_VTABLE
+  int GetCachedSize() const { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void InternalSwap(JoinEventsRequest* other);
+ private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() { return "workerservice.JoinEventsRequest"; }
+
+ protected:
+  explicit JoinEventsRequest(::google::protobuf::Arena* arena);
+  JoinEventsRequest(::google::protobuf::Arena* arena, const JoinEventsRequest& from);
+  JoinEventsRequest(::google::protobuf::Arena* arena, JoinEventsRequest&& from) noexcept
+      : JoinEventsRequest(arena) {
+    *this = ::std::move(from);
+  }
+  const ::google::protobuf::Message::ClassData* GetClassData() const PROTOBUF_FINAL;
+  static const ::google::protobuf::Message::ClassDataFull _class_data_;
+
+ public:
+  ::google::protobuf::Metadata GetMetadata() const;
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+  enum : int {
+    kLeftEventsFieldNumber = 1,
+    kRightEventsFieldNumber = 2,
+    kJoinTypeFieldNumber = 3,
+  };
+  // repeated .workerservice.Event left_events = 1;
+  int left_events_size() const;
+  private:
+  int _internal_left_events_size() const;
+
+  public:
+  void clear_left_events() ;
+  ::workerservice::Event* mutable_left_events(int index);
+  ::google::protobuf::RepeatedPtrField<::workerservice::Event>* mutable_left_events();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& _internal_left_events() const;
+  ::google::protobuf::RepeatedPtrField<::workerservice::Event>* _internal_mutable_left_events();
+  public:
+  const ::workerservice::Event& left_events(int index) const;
+  ::workerservice::Event* add_left_events();
+  const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& left_events() const;
+  // repeated .workerservice.Event right_events = 2;
+  int right_events_size() const;
+  private:
+  int _internal_right_events_size() const;
+
+  public:
+  void clear_right_events() ;
+  ::workerservice::Event* mutable_right_events(int index);
+  ::google::protobuf::RepeatedPtrField<::workerservice::Event>* mutable_right_events();
+
+  private:
+  const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& _internal_right_events() const;
+  ::google::protobuf::RepeatedPtrField<::workerservice::Event>* _internal_mutable_right_events();
+  public:
+  const ::workerservice::Event& right_events(int index) const;
+  ::workerservice::Event* add_right_events();
+  const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& right_events() const;
+  // .workerservice.JoinType join_type = 3;
+  void clear_join_type() ;
+  ::workerservice::JoinType join_type() const;
+  void set_join_type(::workerservice::JoinType value);
+
+  private:
+  ::workerservice::JoinType _internal_join_type() const;
+  void _internal_set_join_type(::workerservice::JoinType value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:workerservice.JoinEventsRequest)
+ private:
+  class _Internal;
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<
+      2, 3, 2,
+      0, 2>
+      _table_;
+
+  static constexpr const void* _raw_default_instance_ =
+      &_JoinEventsRequest_default_instance_;
+
+  friend class ::google::protobuf::MessageLite;
+  friend class ::google::protobuf::Arena;
+  template <typename T>
+  friend class ::google::protobuf::Arena::InternalHelper;
+  using InternalArenaConstructable_ = void;
+  using DestructorSkippable_ = void;
+  struct Impl_ {
+    inline explicit constexpr Impl_(
+        ::google::protobuf::internal::ConstantInitialized) noexcept;
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena);
+    inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
+                          ::google::protobuf::Arena* arena, const Impl_& from,
+                          const JoinEventsRequest& from_msg);
+    ::google::protobuf::RepeatedPtrField< ::workerservice::Event > left_events_;
+    ::google::protobuf::RepeatedPtrField< ::workerservice::Event > right_events_;
+    int join_type_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_worker_5fservice_2eproto;
+};
 
 // ===================================================================
 
@@ -855,6 +1316,183 @@ WorkerQueryResponse::_internal_mutable_events() {
 
 // -------------------------------------------------------------------
 
+// JoinEventsRequest
+
+// repeated .workerservice.Event left_events = 1;
+inline int JoinEventsRequest::_internal_left_events_size() const {
+  return _internal_left_events().size();
+}
+inline int JoinEventsRequest::left_events_size() const {
+  return _internal_left_events_size();
+}
+inline void JoinEventsRequest::clear_left_events() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.left_events_.Clear();
+}
+inline ::workerservice::Event* JoinEventsRequest::mutable_left_events(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:workerservice.JoinEventsRequest.left_events)
+  return _internal_mutable_left_events()->Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField<::workerservice::Event>* JoinEventsRequest::mutable_left_events()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable_list:workerservice.JoinEventsRequest.left_events)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_left_events();
+}
+inline const ::workerservice::Event& JoinEventsRequest::left_events(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:workerservice.JoinEventsRequest.left_events)
+  return _internal_left_events().Get(index);
+}
+inline ::workerservice::Event* JoinEventsRequest::add_left_events() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::workerservice::Event* _add = _internal_mutable_left_events()->Add();
+  // @@protoc_insertion_point(field_add:workerservice.JoinEventsRequest.left_events)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& JoinEventsRequest::left_events() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:workerservice.JoinEventsRequest.left_events)
+  return _internal_left_events();
+}
+inline const ::google::protobuf::RepeatedPtrField<::workerservice::Event>&
+JoinEventsRequest::_internal_left_events() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.left_events_;
+}
+inline ::google::protobuf::RepeatedPtrField<::workerservice::Event>*
+JoinEventsRequest::_internal_mutable_left_events() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.left_events_;
+}
+
+// repeated .workerservice.Event right_events = 2;
+inline int JoinEventsRequest::_internal_right_events_size() const {
+  return _internal_right_events().size();
+}
+inline int JoinEventsRequest::right_events_size() const {
+  return _internal_right_events_size();
+}
+inline void JoinEventsRequest::clear_right_events() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.right_events_.Clear();
+}
+inline ::workerservice::Event* JoinEventsRequest::mutable_right_events(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:workerservice.JoinEventsRequest.right_events)
+  return _internal_mutable_right_events()->Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField<::workerservice::Event>* JoinEventsRequest::mutable_right_events()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable_list:workerservice.JoinEventsRequest.right_events)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_right_events();
+}
+inline const ::workerservice::Event& JoinEventsRequest::right_events(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:workerservice.JoinEventsRequest.right_events)
+  return _internal_right_events().Get(index);
+}
+inline ::workerservice::Event* JoinEventsRequest::add_right_events() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::workerservice::Event* _add = _internal_mutable_right_events()->Add();
+  // @@protoc_insertion_point(field_add:workerservice.JoinEventsRequest.right_events)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& JoinEventsRequest::right_events() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:workerservice.JoinEventsRequest.right_events)
+  return _internal_right_events();
+}
+inline const ::google::protobuf::RepeatedPtrField<::workerservice::Event>&
+JoinEventsRequest::_internal_right_events() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.right_events_;
+}
+inline ::google::protobuf::RepeatedPtrField<::workerservice::Event>*
+JoinEventsRequest::_internal_mutable_right_events() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.right_events_;
+}
+
+// .workerservice.JoinType join_type = 3;
+inline void JoinEventsRequest::clear_join_type() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.join_type_ = 0;
+}
+inline ::workerservice::JoinType JoinEventsRequest::join_type() const {
+  // @@protoc_insertion_point(field_get:workerservice.JoinEventsRequest.join_type)
+  return _internal_join_type();
+}
+inline void JoinEventsRequest::set_join_type(::workerservice::JoinType value) {
+  _internal_set_join_type(value);
+  // @@protoc_insertion_point(field_set:workerservice.JoinEventsRequest.join_type)
+}
+inline ::workerservice::JoinType JoinEventsRequest::_internal_join_type() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return static_cast<::workerservice::JoinType>(_impl_.join_type_);
+}
+inline void JoinEventsRequest::_internal_set_join_type(::workerservice::JoinType value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.join_type_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// JoinEventsResponse
+
+// repeated .workerservice.Event joined_events = 1;
+inline int JoinEventsResponse::_internal_joined_events_size() const {
+  return _internal_joined_events().size();
+}
+inline int JoinEventsResponse::joined_events_size() const {
+  return _internal_joined_events_size();
+}
+inline void JoinEventsResponse::clear_joined_events() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.joined_events_.Clear();
+}
+inline ::workerservice::Event* JoinEventsResponse::mutable_joined_events(int index)
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable:workerservice.JoinEventsResponse.joined_events)
+  return _internal_mutable_joined_events()->Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField<::workerservice::Event>* JoinEventsResponse::mutable_joined_events()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_mutable_list:workerservice.JoinEventsResponse.joined_events)
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _internal_mutable_joined_events();
+}
+inline const ::workerservice::Event& JoinEventsResponse::joined_events(int index) const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:workerservice.JoinEventsResponse.joined_events)
+  return _internal_joined_events().Get(index);
+}
+inline ::workerservice::Event* JoinEventsResponse::add_joined_events() ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  ::workerservice::Event* _add = _internal_mutable_joined_events()->Add();
+  // @@protoc_insertion_point(field_add:workerservice.JoinEventsResponse.joined_events)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField<::workerservice::Event>& JoinEventsResponse::joined_events() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_list:workerservice.JoinEventsResponse.joined_events)
+  return _internal_joined_events();
+}
+inline const ::google::protobuf::RepeatedPtrField<::workerservice::Event>&
+JoinEventsResponse::_internal_joined_events() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.joined_events_;
+}
+inline ::google::protobuf::RepeatedPtrField<::workerservice::Event>*
+JoinEventsResponse::_internal_mutable_joined_events() {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return &_impl_.joined_events_;
+}
+
+// -------------------------------------------------------------------
+
 // Event
 
 // int64 eid = 1;
@@ -936,6 +1574,19 @@ inline void Event::set_allocated_data(std::string* value) {
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace workerservice
 
+
+namespace google {
+namespace protobuf {
+
+template <>
+struct is_proto_enum<::workerservice::JoinType> : std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor<::workerservice::JoinType>() {
+  return ::workerservice::JoinType_descriptor();
+}
+
+}  // namespace protobuf
+}  // namespace google
 
 // @@protoc_insertion_point(global_scope)
 

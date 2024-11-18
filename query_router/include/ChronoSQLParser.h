@@ -1,6 +1,7 @@
 #ifndef CHRONOSQL_SQLPARSER_H
 #define CHRONOSQL_SQLPARSER_H
 
+#include <grpcpp/grpcpp.h>
 #include "sql_service.grpc.pb.h"
 #include <string>
 #include <memory>
@@ -83,6 +84,9 @@ private:
     bool evaluateJoinCondition(const std::pair<EID, std::string>& leftEvent, const std::pair<EID, std::string>& rightEvent, const hsql::Expr* condition);
 
     static std::string longToChar(long value);
+
+    static std::list<std::pair<int64_t, std::string>> convertEIDListToInt64(const std::list<std::pair<EID, std::string>>& events);
+    static std::list<std::pair<EID, std::string>> convertInt64ListToEID(const std::list<std::pair<int64_t, std::string>>& events);
 };
 
 #endif // CHRONOSQL_SQLPARSER_H
