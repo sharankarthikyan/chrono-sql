@@ -1,5 +1,6 @@
 CMakeFiles/worker_server.dir/worker/worker_server.cpp.o: \
   /Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/worker/worker_server.cpp \
+  /Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/worker/include/worker_server.h \
   /opt/homebrew/include/grpcpp/grpcpp.h \
   /opt/homebrew/include/grpc/grpc.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/stddef.h \
@@ -1460,4 +1461,15 @@ CMakeFiles/worker_server.dir/worker/worker_server.cpp.o: \
   /Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/event_reader/include/MemEventReaderFactory.h \
   /Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/event_reader/include/MemEventReader.h \
   /Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/event_reader/include/IndexedEventReaderFactory.h \
-  /Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/event_reader/include/IndexedEventReader.h
+  /Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/event_reader/include/IndexedEventReader.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/thread \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__thread/formatter.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__thread/jthread.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__stop_token/stop_source.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__stop_token/intrusive_shared_ptr.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__stop_token/stop_state.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__stop_token/atomic_unique_lock.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__stop_token/intrusive_list_view.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__stop_token/stop_token.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__thread/thread.h \
+  /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__thread/this_thread.h

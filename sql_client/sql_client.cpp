@@ -5,11 +5,9 @@
 #include <random>
 #include <fstream>
 
-// Include gRPC headers
 #include <grpcpp/grpcpp.h>
 #include "../proto/sql_service.grpc.pb.h"
 
-// Include RapidJSON headers
 #include "document.h"
 #include "error/en.h"
 
@@ -20,7 +18,6 @@ using sqlservice::QueryRouter;
 using sqlservice::QueryRequest;
 using sqlservice::QueryResponse;
 
-// Function to read server addresses from a JSON file
 std::vector<std::string> ReadServerAddresses(const std::string& filename) {
     std::vector<std::string> servers;
     std::ifstream ifs(filename);
@@ -68,27 +65,21 @@ public:
         }
     }
 
-    // Method to execute an SQL query using a randomly selected server
     std::string ExecuteQuery(const std::string& query) {
-        int retries = servers_.size();  // Retry with other servers if one fails
+        int retries = servers_.size();
         while (retries-- > 0) {
-            // Select a random server
             int index = dist_(rng_);
             const std::string& server_address = servers_[index];
 
-            // Establish a connection to the selected server
             auto channel = grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials());
             auto stub = QueryRouter::NewStub(channel);
 
-            // Prepare request
             QueryRequest request;
             request.set_query(query);
 
-            // Prepare response and context
             QueryResponse response;
             ClientContext context;
 
-            // Call gRPC method
             Status status = stub->ExecuteQuery(&context, request, &response);
 
             if (status.ok()) {
@@ -122,10 +113,8 @@ std::string get_argument(int argc, char** argv, const std::string& flag, const s
 }
 
 int main(int argc, char** argv) {
-    // Optional: Allow specifying the configuration file via command-line
-    std::string config_file = get_argument(argc, argv, "--config", "/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/config.json");
+    std::string config_file = get_argument(argc, argv, "--config", "");
 
-    // Read server addresses from the configuration file
     std::vector<std::string> server_addresses = ReadServerAddresses(config_file);
     if (server_addresses.empty()) {
         std::cerr << "No servers available. Exiting." << std::endl;
@@ -137,10 +126,8 @@ int main(int argc, char** argv) {
         std::cout << " - " << server << std::endl;
     }
 
-    // Create SQL client with the list of server addresses
     SQLClient client(server_addresses);
 
-    // Loop for accepting user input
     std::string query;
     while (true) {
         std::cout << "csql> ";
@@ -154,7 +141,6 @@ int main(int argc, char** argv) {
             break;
         }
 
-        // Execute query and print result
         std::string result = client.ExecuteQuery(query);
         std::cout << result << std::endl;
     }

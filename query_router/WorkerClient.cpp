@@ -1,10 +1,8 @@
 #include "WorkerClient.h"
 
-// Constructor implementation
 WorkerClient::WorkerClient(std::shared_ptr<grpc::Channel> channel)
     : stub_(workerservice::WorkerService::NewStub(channel)) {}
 
-// Fetch replay data from worker server
 std::list<std::pair<int64_t, std::string>> WorkerClient::getReplayData(const std::string& cid, int64_t startEID, int64_t endEID) {
     workerservice::WorkerQueryRequest request;
     request.set_cid(cid);

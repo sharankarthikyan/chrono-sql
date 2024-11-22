@@ -33,6 +33,7 @@ link_directories(/Users/sharan/Desktop/workplace/IIT/SEM01/CS546/term-project/sq
 
 include_directories(${CMAKE_SOURCE_DIR}/proto)
 include_directories(${CMAKE_SOURCE_DIR}/query_router/include)
+include_directories(${CMAKE_SOURCE_DIR}/worker/include)
 include_directories(${CMAKE_SOURCE_DIR}/common/include)
 include_directories(${CMAKE_SOURCE_DIR}/exception/include)
 include_directories(${CMAKE_SOURCE_DIR}/config/include)
